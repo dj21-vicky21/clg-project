@@ -10,7 +10,8 @@ import cv2,sys
 from playsound import playsound
 import platform
 import time
-from fpdf import FPDF
+import shutil
+
 
 #language function
 def lang():
@@ -28,7 +29,7 @@ def lang():
     lists = [None]+lists
     checker = True
     while checker:
-        num =int(input("\nEnter the option: "))
+        num =int(input("\nselect the language using above option: "))
         if num <= len(dic):
             return lists[num]
             checker =False
@@ -64,35 +65,52 @@ def save(text,lang):
         else:
             print('\nfile already exist!')
 
+
+
 # main function
 
-
 def audio():
-	x = "#" * 30
-	y = "=" * 28
+	if(platform.system() == "Windows"): 
+		print(os.system('cls')) 
+	else:
+		print(os.system('clear'))
 	global bye 
-	bye = "\n {}\n# {} #\n# ===><===  ===> Thank you for interseted in  your project <===  ## ===><=== #\n# {} #\n {}".format(x, y, y, x) 
+	#Printing exit Message For This Program
+	bye = """ 
 
-	#Printing Welcome Message And options For This Program
+  ------------------------------------------------------
+ |======================================================| 
+ |==========            Thank You             ==========|
+ |======================================================|
+  ------------------------------------------------------
+  
+		"""
+
+	#Printing Welcome Message  For This Program
+
 	print(""" 
 
   ------------------------------------------------------
  |======================================================| 
- |========	 Welcome To Audiobook           ========|
+ |==========        Welcome To Evoice         ==========|
  |======================================================|
   ------------------------------------------------------
 
-Enter 1 : To using pdf 
-Enter 2 : To Using photo 
-Enter 3 : To Using custiom text
-Enter 4 : To using camera
+Select The Method
+
+Enter 1 : Select pdf 
+Enter 2 : Select photo 
+Enter 3 : Custom Text
+Enter 4 : Using camera
 		
 		""")
 
 	try: 
 		userInput = int(input("\nPlease Select An Above Option: "))
 	except ValueError:
-		exit("\nHy! That's Not A Number") 
+		print("\nHy! That's Not A Number") 
+		time.sleep(2)
+		audio()
 	else:
 		print("\n")
 
@@ -105,6 +123,8 @@ Enter 4 : To using camera
 # pdf to speak 
 
 	if (userInput == 1):
+		print('please select file ')
+		time.sleep(2)
 		pdf = askopenfilename()
 		pdfReader = PyPDF2.PdfFileReader(pdf)
 		pages=pdfReader.numPages
@@ -129,6 +149,7 @@ Enter 2: To save mp3
 					checker = False
 				else:
 					print('\nError: Wrong Number Entered!')
+		
 
 
 # .............................................................
@@ -136,6 +157,8 @@ Enter 2: To save mp3
 # img to speak
 
 	elif (userInput == 2):
+		print('please select file ')
+		time.sleep(2)
 # get image
 		image = Image.open(askopenfilename())
 # get text from image
@@ -159,7 +182,6 @@ Enter 2: To save mp3
 				checker = False
 			else:
 				print('\nError: Wrong Number Entered!')
-		cv2.destroyAllWindows()
 
 
 # ..............................................................
@@ -193,7 +215,7 @@ Enter 2: To save mp3
 	elif(userInput == 4):
 # create dir
 		cwd = os.getcwd()
-		dir = "converter"
+		dir = "CoNvErTeR_DiR"
 		parent_dir = cwd 
 		path = os.path.join(parent_dir, dir) 
 		
@@ -207,7 +229,7 @@ Enter 2: To save mp3
 		camera = cv2.VideoCapture(0)
 		while True:
 			_,frame = camera.read()
-			cv2.imshow('test',frame)
+			cv2.imshow('Camera',frame)
 			k = cv2.waitKey(1)
 			if k%256 == 27:
 				print('Escape hit,close')
@@ -240,8 +262,8 @@ Enter 2: To save mp3
 # loop using get text
 		while i <= file_count:
 			file_img = Image.open(file_dir +'img%.d.jpg' % i)
+			# time.sleep(10)
 			text = pytesseract.image_to_string(file_img, lang="eng")
-			# print(text.strip())
 			text = text.strip()
 			i +=1
 			print('\n')
@@ -262,6 +284,8 @@ Enter 2: To save mp3
 					checker = False
 				else:
 					print('\nError: Wrong Number Entered!')
+		shutil.rmtree(file_dir)
+				
 
 	# check greater than 4 are lesser than 1
 
@@ -284,6 +308,7 @@ def runAgain():
 		audio()
 		runAgain()
 	else:
-		quit("\nbye")
+		# declared global bye
+		print(bye)
 runAgain()
 		
